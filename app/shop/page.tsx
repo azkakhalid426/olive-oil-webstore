@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ChevronLeft,
@@ -69,7 +70,7 @@ const getProductImages = (product: Product) => {
       Boolean(image) && array.indexOf(image) === index
   )
 
-  return uniqueImages.slice(0, 3)
+  return uniqueImages
 }
 
 /* =========================================================
@@ -363,9 +364,11 @@ function ProductGallery({
 function ProductCard({
   product,
   onAddToCart,
+  onBuyNow,
 }: {
   product: Product
   onAddToCart: (product: Product) => void
+  onBuyNow: (product: Product) => void
 }) {
   const isBundle = product.bundleQuantity > 1
 
@@ -464,6 +467,14 @@ function ProductCard({
               : 'Add bottle to cart'
             : 'Out of stock'}
         </button>
+        <button
+  type="button"
+  onClick={() => onBuyNow(product)}
+  disabled={!product.active || product.stock <= 0}
+  className="mt-2 w-full rounded-full border border-[#243328] bg-white px-5 py-3 text-xs font-semibold text-[#243328] transition hover:bg-[#eee9dc] disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
+>
+  Buy Now
+</button>
       </div>
     </article>
   )
@@ -477,8 +488,11 @@ export default function ShopPage() {
   const {
     addToCart,
     openCart,
+    closeCart,
     itemCount,
   } = useCart()
+
+const router = useRouter()
 
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -493,6 +507,7 @@ export default function ShopPage() {
 
   const [searchQuery, setSearchQuery] = useState('')
 
+  
   useEffect(() => {
     fetch('/api/products')
       .then((response) => {
@@ -512,6 +527,17 @@ export default function ShopPage() {
         setLoading(false)
       })
   }, [])
+
+  const handleBuyNow = (product: Product) => {
+    if (!product.active || product.stock <= 0) {
+      return
+    }
+
+    addToCart(product)
+    closeCart()
+    router.push('/checkout')
+  }
+
 
   /* =====================================================
      FILTER + SORT
@@ -938,9 +964,10 @@ export default function ShopPage() {
           <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {filteredProducts.map((product) => (
               <ProductCard
-                key={product._id}
-                product={product}
-                onAddToCart={handleAddToCart}
+  key={product._id}
+  product={product}
+  onAddToCart={handleAddToCart}
+  onBuyNow={handleBuyNow}
               />
             ))}
           </div>

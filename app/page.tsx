@@ -1,7 +1,9 @@
+
 'use client'
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useCart } from '@/lib/cart-context'
 import {
   ArrowRight,
   Check,
@@ -36,26 +38,12 @@ const benefits = [
   },
 ]
 
-const orderSteps = [
-  {
-    title: 'Pick your size',
-    text: 'Choose a single bottle, The Pair or The Family Set from the shop.',
-  },
-  {
-    title: 'Add to cart',
-    text: 'Your cart opens straight away, where you can review your order.',
-  },
-  {
-    title: 'Checkout from the cart',
-    text: 'Enter your delivery details and place your order. We deliver across Pakistan.',
-  },
-]
-
 export default function HomePage() {
+  const { itemCount } = useCart()
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#eee9dc] text-[#243328]">
       {/* ANNOUNCEMENT BAR */}
-
       <div className="bg-[#243328] px-4 py-2.5 text-center text-[9px] font-bold uppercase tracking-[0.2em] text-[#f4eee1] sm:text-[10px] sm:tracking-[0.22em]">
         Premium Turkish Extra Virgin Olive Oil
         <span className="mx-2 text-[#d7a66c]">·</span>
@@ -63,23 +51,19 @@ export default function HomePage() {
       </div>
 
       {/* HEADER */}
-
       <header className="sticky top-0 z-50 border-b border-[#243328]/5 bg-[#eee9dc]/90 backdrop-blur-md">
         <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between gap-4 px-5 sm:h-[84px] lg:px-10">
           {/* COMPANY NAME */}
-
           <Link href="/" className="group flex flex-col leading-none">
             <span className="font-serif text-[24px] font-bold tracking-[-0.03em] text-[#243328] transition duration-300 group-hover:text-[#a26934] sm:text-[28px]">
               VinKimya
             </span>
-
             <span className="mt-1 text-[8px] font-bold uppercase tracking-[0.16em] text-[#657064] sm:text-[9px]">
               (Private) Limited
             </span>
           </Link>
 
-          {/* NAVIGATION (visible on all screens) */}
-
+          {/* NAVIGATION */}
           <nav className="flex items-center gap-5 sm:gap-10">
             <Link
               href="/"
@@ -94,38 +78,40 @@ export default function HomePage() {
             >
               Shop
             </Link>
+
             <Link
-               href="/reviews"
-               className="text-[15px] font-semibold text-[#243328] transition hover:text-[#a26934] sm:text-[16px]"
+              href="/reviews"
+              className="text-[15px] font-semibold text-[#243328] transition hover:text-[#a26934] sm:text-[16px]"
             >
               Reviews
             </Link>
           </nav>
 
-          {/* CART ICON */}
-
+          {/* CART ICON WITH LIVE QUANTITY */}
           <Link
             href="/cart"
-            aria-label="Shopping Cart"
+            aria-label={`Shopping Cart${itemCount > 0 ? `, ${itemCount} items` : ''}`}
             title="Shopping Cart"
-            className="flex size-11 shrink-0 items-center justify-center rounded-full border border-[#243328]/20 bg-white/30 text-[#243328] shadow-sm transition-all duration-300 hover:border-[#a26934] hover:bg-[#a26934] hover:text-white hover:shadow-md sm:size-12"
+            className="relative flex size-11 shrink-0 items-center justify-center rounded-full border border-[#243328]/20 bg-white/30 text-[#243328] shadow-sm transition-all duration-300 hover:border-[#a26934] hover:bg-[#a26934] hover:text-white hover:shadow-md sm:size-12"
           >
             <ShoppingBag className="size-5" />
+
+            {itemCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#a26934] px-1 text-[10px] font-bold leading-none text-white">
+                {itemCount > 99 ? '99+' : itemCount}
+              </span>
+            )}
           </Link>
         </div>
       </header>
 
       {/* HERO */}
-
       <section className="relative overflow-hidden">
-        {/* Soft background glow */}
-
         <div className="pointer-events-none absolute -left-40 top-10 h-[380px] w-[380px] rounded-full bg-[#d5dfc5] opacity-60 blur-[100px]" />
         <div className="pointer-events-none absolute -right-40 bottom-0 h-[380px] w-[380px] rounded-full bg-[#d9c29c] opacity-25 blur-[100px]" />
 
         <div className="relative mx-auto grid max-w-[1440px] items-center gap-6 px-5 py-10 sm:py-14 lg:grid-cols-[1fr_0.9fr] lg:gap-10 lg:px-10 lg:py-16">
           {/* HERO CONTENT */}
-
           <div className="hero-copy relative z-10 max-w-xl">
             <p className="mb-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.24em] text-[#a26934]">
               <span className="h-px w-9 bg-[#a26934]" />
@@ -141,12 +127,11 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-6 max-w-[510px] text-[15px] leading-7 text-[#556057] sm:text-[17px]">
-              Premium Extra Virgin Olive Oil, produced and bottled in
-              Türkiye, brought to your table in Pakistan.
+              Premium Extra Virgin Olive Oil, produced and bottled in Türkiye,
+              brought to your table in Pakistan.
             </p>
 
             {/* HERO BUTTONS */}
-
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/shop"
@@ -165,7 +150,6 @@ export default function HomePage() {
             </div>
 
             {/* PRODUCT FEATURES */}
-
             <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
               {['Extra Virgin', 'Turkish Origin', 'Cold Extraction'].map(
                 (item) => (
@@ -176,13 +160,12 @@ export default function HomePage() {
                     <Check className="size-4 text-[#a26934]" />
                     {item}
                   </li>
-                )
+                ),
               )}
             </ul>
           </div>
 
           {/* HERO BOTTLE */}
-
           <div className="hero-bottle relative mx-auto w-full max-w-[340px] sm:max-w-[390px]">
             <div className="absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d7dfc8] blur-[70px] sm:h-[330px] sm:w-[330px]" />
 
@@ -205,7 +188,6 @@ export default function HomePage() {
       </section>
 
       {/* PRODUCT INFORMATION STRIP */}
-
       <section className="bg-[#243328]">
         <dl className="mx-auto grid max-w-[1440px] grid-cols-2 sm:grid-cols-4">
           {[
@@ -218,7 +200,6 @@ export default function HomePage() {
               <dt className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#d7a66c]">
                 {title}
               </dt>
-
               <dd className="mt-1 text-sm font-medium text-[#f4eee1]">
                 {value}
               </dd>
@@ -228,7 +209,6 @@ export default function HomePage() {
       </section>
 
       {/* BENEFITS */}
-
       <section
         id="benefits"
         className="relative scroll-mt-24 overflow-hidden bg-[#f5f1e7] px-5 py-16 sm:py-20 lg:px-10"
@@ -270,7 +250,6 @@ export default function HomePage() {
       </section>
 
       {/* SALAD / LIFESTYLE */}
-
       <section className="mx-auto max-w-[1440px] px-5 py-16 sm:py-20 lg:px-10">
         <div className="lifestyle-section grid overflow-hidden rounded-[24px] bg-[#dce3cf] sm:rounded-[28px] md:grid-cols-2">
           <div className="relative min-h-[260px] overflow-hidden sm:min-h-[380px] md:min-h-[420px]">
@@ -295,9 +274,9 @@ export default function HomePage() {
               </h2>
 
               <p className="mt-5 text-sm leading-7 text-[#556057] sm:text-base">
-                Drizzle over fresh salads, vegetables, bread and your
-                favourite everyday dishes. A little olive oil adds rich
-                flavour and healthy unsaturated fats to your daily meals.
+                Drizzle over fresh salads, vegetables, bread and your favourite
+                everyday dishes. A little olive oil adds rich flavour and
+                healthy unsaturated fats to your daily meals.
               </p>
 
               <Link
@@ -313,7 +292,6 @@ export default function HomePage() {
       </section>
 
       {/* TURKISH ORIGIN */}
-
       <section className="relative overflow-hidden bg-[#243328] px-5 py-16 text-[#f4eee1] sm:py-20 lg:px-10">
         <div className="relative mx-auto grid max-w-[1440px] items-center gap-12 lg:grid-cols-[1fr_0.9fr]">
           <div className="relative mx-auto w-full max-w-[560px]">
@@ -333,7 +311,6 @@ export default function HomePage() {
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#a26934]">
                 Authentic
               </p>
-
               <p className="mt-1 font-serif text-lg">Turkish origin</p>
             </div>
           </div>
@@ -360,16 +337,14 @@ export default function HomePage() {
                   >
                     {item}
                   </li>
-                )
+                ),
               )}
             </ul>
           </div>
         </div>
       </section>
 
-
       {/* FINAL CTA */}
-
       <section className="px-5 pb-16 sm:pb-20 lg:px-10">
         <div className="relative mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-7 overflow-hidden rounded-[24px] bg-[#dedfcf] px-7 py-12 text-center sm:rounded-[28px] sm:px-12 lg:flex-row lg:text-left">
           <span className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#c6cdae] opacity-40" />
@@ -396,12 +371,10 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-
       <footer className="bg-[#142018] px-5 py-12 text-[#d9dfd5] lg:px-10">
         <div className="mx-auto max-w-[1440px]">
           <div className="grid gap-10 md:grid-cols-3">
             {/* COMPANY / LOGO */}
-
             <div>
               <div className="relative h-[75px] w-[260px] max-w-full">
                 <img
@@ -412,13 +385,12 @@ export default function HomePage() {
               </div>
 
               <p className="mt-4 max-w-sm text-sm leading-6 text-[#9da99f]">
-                VinKimya (Private) Limited brings BİRSEN HANIM Premium
-                Turkish Extra Virgin Olive Oil to customers across Pakistan.
+                VinKimya (Private) Limited brings BİRSEN HANIM Premium Turkish
+                Extra Virgin Olive Oil to customers across Pakistan.
               </p>
             </div>
 
             {/* EXPLORE */}
-
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#d9dfd5]">
                 Explore
@@ -428,18 +400,20 @@ export default function HomePage() {
                 <Link href="/" className="transition hover:text-white">
                   Home
                 </Link>
-
                 <Link href="/shop" className="transition hover:text-white">
                   Shop
                 </Link>
                 <Link href="/reviews" className="transition hover:text-white">
                   Reviews
                 </Link>
+                <Link href="/cart" className="transition hover:text-white">
+                  Shopping Cart
+                  {itemCount > 0 ? ` (${itemCount})` : ''}
+                </Link>
               </div>
             </div>
 
             {/* CONTACT */}
-
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#d9dfd5]">
                 Contact
@@ -470,7 +444,6 @@ export default function HomePage() {
       </footer>
 
       {/* STYLES */}
-
       <style jsx global>{`
         html {
           scroll-behavior: smooth;
@@ -481,8 +454,6 @@ export default function HomePage() {
           outline: 2px solid #a26934;
           outline-offset: 3px;
         }
-
-        /* One entrance sequence for the hero */
 
         .hero-copy {
           animation: heroText 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -514,8 +485,6 @@ export default function HomePage() {
           }
         }
 
-        /* Gentle bottle float */
-
         .bottle-image {
           animation: bottleFloat 5s ease-in-out infinite;
         }
@@ -529,8 +498,6 @@ export default function HomePage() {
             transform: translateY(-8px);
           }
         }
-
-        /* Image zoom on hover */
 
         .lifestyle-image,
         .origin-image {

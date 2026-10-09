@@ -176,6 +176,12 @@ export default function CartPage() {
             >
               Shop
             </Link>
+            <Link
+              href="/reviews"
+              className="text-sm text-[#556057] transition hover:text-[#a26934]"
+            >
+              Reviews
+            </Link>
           </nav>
 
           {/* CART */}
@@ -559,6 +565,10 @@ export default function CartPage() {
                 >
                   Shop
                 </Link>
+                 <Link href="/reviews" className="transition hover:text-white">
+                  Reviews
+                </Link>
+                
 
               </div>
             </div>
